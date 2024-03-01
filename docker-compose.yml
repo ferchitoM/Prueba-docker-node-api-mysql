@@ -1,0 +1,39 @@
+version: '4' #versión de docker instalada
+services:
+  mysqldb: #El nombre que se le quiera dar al servicio
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=node-express-mysql-crud
+      - MYSQL_USER=user #puede ser cualquier nombre
+      - MYSQL_PASSWORD=123
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1 #permitir trabajar sin contraseña
+    volumes:
+      - "./backend/db:/docker-entrypoint-initdb.d" #sincroniza el script sql con mysql
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mysqldb #Mismo nombre del servicio de arriba
+      - PMA_PORT=3306
+
+  # backend:
+  #   depends_on:
+  #     - mysqldb #Mismo nombre del servicio de arriba
+  #   build: ./backend
+  #   restart: unless-stopped
+  #   env_file: ./app/.env
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     - DB_HOST=mysqldb #Mismo nombre del servicio
+  #     - DB_USER=user
+  #     - DB_PASSWORD=123
+  #     - DB_NAME=node-express-mysql-crud
+  #     - DB_PORT=3306
+  #   stdin_open: true
+  #   tty: true
+
