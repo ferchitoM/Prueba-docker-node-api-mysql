@@ -1,7 +1,7 @@
 "user strict";
 
 const connection = {
-    host: "localhost",
+    host: "mysqldb",
     user: "user",
     password: "123",
     database: "Base-datos-prueba",
