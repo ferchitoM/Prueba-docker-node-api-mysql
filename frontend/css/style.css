@@ -10,3 +10,10 @@
   td {
     line-height: 3rem;
   }
+
+.validation-error-msg {
+  margin-top: 1rem;
+  height: 1px;
+  color: red;
+  display: none;
+}

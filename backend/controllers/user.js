@@ -1,6 +1,10 @@
+const { validationResult } = require("express-validator");
 const User = require("../models/user");
 
 exports.createUser = async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) return res.status(401).json({ errors: result.array() });
+
     const user = new User(req.body);
     try {
         const [{ insertId }] = await connection.promise().query("INSERT INTO users set ?", user);
@@ -30,9 +34,12 @@ exports.showUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) return res.status(401).json({ errors: result.array() });
+
     try {
         const { id } = req.params;
-        const { user } = req.body;
+        const user = req.body;
         await connection.promise().query("UPDATE users SET ? WHERE _id = ?", [user, id]);
         res.status(200).json("User updated");
     } catch (err) {
