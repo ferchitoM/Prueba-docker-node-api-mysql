@@ -1,4 +1,4 @@
-Dockerized Node API using: express, express-validator, MySQL database and phpmyadmin
+Dockerized Node API - CRUD using: express, express-validator, MySQL database and phpmyadmin
 - Docker v4
 - Mysql v8
 - phpmyadmin v5
