@@ -11,19 +11,27 @@ services:
       - "./backend/db:/docker-entrypoint-initdb.d" #sincroniza el script sql con mysql
     ports:
       - 3306:3306
-    healthcheck:
+    healthcheck: #verifica que servicio de mysql se esté ejecutando
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
       interval: 5s
       timeout: 3s
       retries: 2
       start_period: 0s
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mysqldb #Mismo nombre del servicio de arriba
+      - PMA_PORT=3306
+
 # Eliminar volumen de mysql
 # docker volume rm $(docker volume ls -q)
-  app:
+  backend:
     depends_on:
       mysqldb:
-        condition: service_healthy
+        condition: service_healthy #para esperar que el servicio de mysql se esté ejecutando
         restart: true
     links:
       - mysqldb
@@ -37,12 +45,14 @@ services:
       - DB_PASSWORD=123
       - DB_NAME=Base-datos-prueba
       - DB_PORT=3306
-    #command: ["./wait-for-it.sh", "mysql:3307"]
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+  frontend:
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+        restart: true
+    links:
+      - mysqldb
+    build: ./frontend
     ports:
-      - 8080:80
-    environment:
-      - PMA_HOST=mysqldb #Mismo nombre del servicio de arriba
-      - PMA_PORT=3306
+      - 4000:4000
